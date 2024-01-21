@@ -1,0 +1,49 @@
+body {
+  background-color: #aee19e;
+  background-image: url("https://www.studiopress.com/wp-content/uploads/sp-bg-2880x1452.png");
+}
+
+/* FOOTER STYLES
+  –––––––––––––––––––––––––––––––––––––––––––––––––– */
+.page-footer {
+  position: fixed;
+  right: 0;
+  bottom: 50px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  z-index: 1;
+}
+
+.page-footer a {
+  display: flex;
+  margin-left: 4px;
+}
+
+.form-card {
+  border-radius: 15px;
+  background-color: white;
+  height: 100%;
+}
+
+.w-bg-color {
+  background-color: #fff;
+}
+.w-color {
+  color: white;
+}
+
+.error {
+  color: #dc3545;
+}
+input .form-control .error {
+  border-color: #dc3545;
+}
+
+.no-data {
+  text-align: center;
+}
+
+#ui-datepicker-div {
+  font-size: 80%;
+}
