@@ -1,4 +1,7 @@
-function EmpTable() {
+import { useState } from "react"
+
+function EmpTable({ employee }) {
+    const [search, setSearch] = useState('')
     return (
         <div className="col-md-7 offset-md-1">
             <h3 className="mb-3 mt-3 text-center w-color">Employee Table</h3>
@@ -11,6 +14,8 @@ function EmpTable() {
                             type="text"
                             className="form-control"
                             placeholder="Type here..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
                 </div>
@@ -27,48 +32,31 @@ function EmpTable() {
                         </tr>
                     </thead>
                     <tbody id="employee-table-body" className="searchable">
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>vijay</td>
-                            <td>12/04/23</td>
-                            <td>Developer</td>
-                            <td>12,000</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>vijay</td>
-                            <td>12/04/23</td>
-                            <td>Developer</td>
-                            <td>12,000</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>vijay</td>
-                            <td>12/04/23</td>
-                            <td>Developer</td>
-                            <td>12,000</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">4</th>
-                            <td>vijay</td>
-                            <td>12/04/23</td>
-                            <td>Developer</td>
-                            <td>12,000</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">5</th>
-                            <td>vijay</td>
-                            <td>12/04/23</td>
-                            <td>Developer</td>
-                            <td>12,000</td>
-                        </tr>
-                        {/* <tr className="no-data">
-                            <td colspan="5">No data</td>
-                        </tr> */}
+                        {employee &&
+                            employee?.filter((row) =>
+                                row?.name?.match(new RegExp(search, "i")) ||
+                                row?.designation?.match(new RegExp(search, "i")))?.map((emp, index) => {
+                                    return (
+                                        <tr key={`${emp.name}-${emp.dob}-${index + 1}`} >
+                                            <th scope="row">{index + 1}</th>
+                                            <td>{emp.name}</td>
+                                            <td>{emp.dob}</td>
+                                            <td>{emp.designation}</td>
+                                            <td>{emp.salary}</td>
+                                        </tr>
+                                    )
+                                }
+                                )
+                        }
+                        {employee.length === 0 &&
+                            <tr className="no-data">
+                                <td colSpan="5">No data</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div >
     )
 }
 
