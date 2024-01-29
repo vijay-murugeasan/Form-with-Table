@@ -5,11 +5,11 @@ import { useState } from "react"
 function AppLayout() {
     const [employee, setEmployee] = useState([{
         designation: "Frontend Developer",
-        dob: "78",
+        dob: "1/1/2024",
         empId: 1,
         id: 101,
         name: "vijay",
-        salary: 956
+        salary: '₹ 956'
     }])
 
 

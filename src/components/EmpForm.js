@@ -1,18 +1,22 @@
 import Form from "react-bootstrap/Form"
 import { Controller, useForm } from 'react-hook-form'
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 
 
 function EmpForm({ setEmployee }) {
-
-
-    const { register, getValues, handleSubmit, formState: { errors }, control, setError, reset
-    } = useForm()
+    const { register, getValues, handleSubmit, formState: { errors }, control, setError, setValue, reset
+    } = useForm({
+        mode: "onChanges",
+        reValidateMode: "onChange"
+    })
     const [success, setSuccess] = useState('')
-
+    const handleChange = (dateChange) => {
+        setValue("dob", dateChange, {
+            shouldDirty: true
+        });
+    };
     async function onSubmit(data) {
         setSuccess('')
         try {
@@ -21,8 +25,8 @@ function EmpForm({ setEmployee }) {
                 empId: 1,
                 name: employeeName,
                 designation: designation,
-                dob: dob,
-                salary: salary,
+                dob: dob.toLocaleDateString(),
+                salary: `₹ ${salary}`,
             };
 
             const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
@@ -36,7 +40,6 @@ function EmpForm({ setEmployee }) {
                 setError('root.serverError', { type: res.statusCode, message: "Failed to creating your employee" })
             };
             const result = await res.json()
-            console.log(result)
             if (res.ok) {
                 if (result) setEmployee((emp) => [...emp, result]);
 
@@ -77,7 +80,7 @@ function EmpForm({ setEmployee }) {
                         <div className="col-md-12">
                             <>
                                 <Form.Label>Designation</Form.Label>
-                                <Form.Select className="form-control"
+                                <Form.Select
                                     id="designation"
                                     name="designation"
                                     isInvalid={errors.designation}
@@ -98,32 +101,30 @@ function EmpForm({ setEmployee }) {
                         </div>
                         <div className="col-md-12">
                             <Form.Group>
-                                {/* <Form.Label>DOB</Form.Label> */}
-
-                                {/* <Controller
-                                    control={control}
-
-                                    render={({ field }) => (
-                                        <DatePicker
-                                            id="dob"
-                                            name="dob"
-                                            className="form-control"
-                                            placeholderText="Select date"
-                                            onChange={(e) => field.onChange(e)}
-                                            selected={field.value}
-                                        />
-                                    )}
-                                /> */}
                                 <Form.Label>DOB</Form.Label>
-                                <Form.Control type="text"
-                                    className="form-control"
-                                    id="dob"
+                                <Controller
+                                    id='dob'
+                                    control={control}
+                                    required
                                     name="dob"
                                     isInvalid={errors.dob}
-                                    {...register("dob", { required: 'Please enter your DOB' })} />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors?.dob?.message}
-                                </Form.Control.Feedback>
+                                    refs={register("dob", { required: 'Please enter your DOB' })}
+                                    render={() => (
+                                        <DatePicker
+                                            className={`form-control ${errors.dob ? 'is-invalid' : ''}`}
+                                            maxDate={new Date()}
+                                            placeholderText="Select date"
+                                            selected={getValues().dob}
+                                            ref={null}
+                                            isClearable
+                                            onChange={handleChange} />
+                                    )}
+                                />
+                                {errors?.dob &&
+                                    <div className="text-danger">
+                                        {errors?.dob?.message}
+                                    </div>
+                                }
                             </Form.Group>
                         </div>
                         <div className="col-md-12" id="salary-input">
@@ -135,8 +136,8 @@ function EmpForm({ setEmployee }) {
                                     name="salary"
                                     isInvalid={errors.salary}
                                     {...register("salary", {
-                                        required: 'Please enter your Salary', valueAsNumber: true,
-                                        validate: (value) => value > 0 || 'please enter correct phone number'
+                                        required: 'Please enter your Salary',
+                                        validate: (value) => Number(value) <= 0 || 'please enter correct phone number'
                                     })} />
                                 <Form.Control.Feedback type="invalid">
                                     {errors?.salary?.message}
@@ -161,8 +162,6 @@ function EmpForm({ setEmployee }) {
                             {success &&
                                 <div className="alert alert-success mt-3">{success}</div>
                             }
-
-
                         </div>
                         <div className="col-12">
                             <div className="row" id="response"></div>
